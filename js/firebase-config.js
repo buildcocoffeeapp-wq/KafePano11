@@ -14,7 +14,7 @@ const firebaseConfig = {
 // Cloudinary Configuration
 const cloudinaryConfig = {
   cloudName: "dvs23rcjh",
-  uploadPreset: "kafepano"
+  uploadPreset: "buildcocoffe"
 };
 
 // Initialize Firebase
