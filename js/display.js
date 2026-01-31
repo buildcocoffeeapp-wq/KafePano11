@@ -16,6 +16,9 @@ async function initializeDisplay() {
   // Update cafe name
   document.getElementById('cafeName').textContent = settings.cafeName || 'KafePano';
   
+  // Update logo
+  updateLogo(settings.logoUrl);
+  
   // Initialize widgets based on settings
   await initializeWidgets(settings);
   
@@ -24,6 +27,7 @@ async function initializeDisplay() {
     const newSettings = snapshot.val() || {};
     applyTheme(newSettings);
     document.getElementById('cafeName').textContent = newSettings.cafeName || 'KafePano';
+    updateLogo(newSettings.logoUrl);
   });
 }
 
@@ -51,6 +55,20 @@ function getDefaultSettings() {
       menu: { enabled: false }
     }
   };
+}
+
+function updateLogo(logoUrl) {
+  const logoImg = document.getElementById('cafeLogo');
+  const logoFallback = document.getElementById('cafeLogoFallback');
+  
+  if (logoUrl) {
+    logoImg.src = logoUrl;
+    logoImg.style.display = 'block';
+    logoFallback.style.display = 'none';
+  } else {
+    logoImg.style.display = 'none';
+    logoFallback.style.display = 'inline';
+  }
 }
 
 function applyTheme(settings) {
