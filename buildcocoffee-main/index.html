@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#8B4513">
+  <title>KafePano - Dijital Pano</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+  <link rel="stylesheet" href="css/display.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="cafe-logo">☕</span>
+      <h1 id="cafeName" class="cafe-name">KafePano</h1>
+    </div>
+    <div class="header-right">
+      <div id="weatherWidget" class="weather-widget">
+        <span class="weather-icon">🌤️</span>
+        <span class="weather-temp">--°C</span>
+      </div>
+      <div id="clockWidget" class="clock-widget">
+        <div class="clock-time">--:--</div>
+        <div class="clock-date">Yükleniyor...</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Gallery Widget -->
+    <div id="galleryWidget" class="widget-card gallery-widget">
+      <div class="widget-header">
+        <span class="widget-icon">🖼️</span>
+        <span class="widget-title">Galeri</span>
+      </div>
+      <div class="widget-content">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Widget -->
+    <div id="calendarWidget" class="widget-card calendar-widget">
+      <div class="widget-header">
+        <span class="widget-icon">📅</span>
+        <span class="widget-title">Bugün - <span id="calendarDate"></span></span>
+      </div>
+      <div class="widget-content">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Widget (optional) -->
+    <div id="menuWidget" class="widget-card menu-widget" style="display: none;">
+      <div class="widget-header">
+        <span class="widget-icon">🍽️</span>
+        <span class="widget-title">Günün Menüsü</span>
+      </div>
+      <div class="widget-content">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Announcement Banner -->
+    <div id="announcementBanner" class="announcement-banner" style="display: none;">
+      <span class="announcement-icon">📢</span>
+      <div class="announcement-text">Yükleniyor...</div>
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/widgets/clock.js"></script>
+  <script src="js/widgets/weather.js"></script>
+  <script src="js/widgets/calendar.js"></script>
+  <script src="js/widgets/gallery.js"></script>
+  <script src="js/widgets/announcement.js"></script>
+  <script src="js/widgets/menu.js"></script>
+  <script src="js/display.js"></script>
+</body>
+</html>

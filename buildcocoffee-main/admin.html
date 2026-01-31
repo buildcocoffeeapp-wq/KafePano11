@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#667eea">
+  <title>Yönetim - KafePano</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-content">
+      <div class="header-title">
+        <span>☕</span>
+        <h1>KafePano Yönetim</h1>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-icon" title="Panoyu Görüntüle">📺</a>
+        <button class="btn-icon" onclick="logout()" title="Çıkış">🚪</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-content">
+    
+    <!-- Calendar Section -->
+    <section class="widget-section">
+      <div class="widget-section-header">
+        <div class="widget-section-title">
+          <span class="widget-section-icon">📅</span>
+          <span class="widget-section-name">Takvim / Etkinlikler</span>
+        </div>
+        <div class="widget-section-toggle">
+          <label class="toggle-switch">
+            <input type="checkbox" id="calendarToggle" class="widget-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="widget-section-content">
+        <div id="eventList" class="item-list"></div>
+        <button class="btn-add" onclick="showEventModal()">
+          ➕ Etkinlik Ekle
+        </button>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="widget-section">
+      <div class="widget-section-header">
+        <div class="widget-section-title">
+          <span class="widget-section-icon">🖼️</span>
+          <span class="widget-section-name">Fotoğraf Galerisi</span>
+        </div>
+        <div class="widget-section-toggle">
+          <label class="toggle-switch">
+            <input type="checkbox" id="galleryToggle" class="widget-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="widget-section-content">
+        <div id="photoList" class="item-list"></div>
+        <button class="btn-add" onclick="showPhotoModal()">
+          ➕ Fotoğraf Ekle
+        </button>
+      </div>
+    </section>
+
+    <!-- Announcements Section -->
+    <section class="widget-section">
+      <div class="widget-section-header">
+        <div class="widget-section-title">
+          <span class="widget-section-icon">📢</span>
+          <span class="widget-section-name">Duyurular</span>
+        </div>
+        <div class="widget-section-toggle">
+          <label class="toggle-switch">
+            <input type="checkbox" id="announcementToggle" class="widget-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="widget-section-content">
+        <div id="announcementList" class="item-list"></div>
+        <button class="btn-add" onclick="showAnnouncementModal()">
+          ➕ Duyuru Ekle
+        </button>
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="widget-section">
+      <div class="widget-section-header">
+        <div class="widget-section-title">
+          <span class="widget-section-icon">🍽️</span>
+          <span class="widget-section-name">Menü</span>
+        </div>
+        <div class="widget-section-toggle">
+          <label class="toggle-switch">
+            <input type="checkbox" id="menuToggle" class="widget-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="widget-section-content">
+        <div id="menuList" class="item-list"></div>
+        <button class="btn-add" onclick="showMenuModal()">
+          ➕ Menü Ekle
+        </button>
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="widget-section">
+      <div class="widget-section-header">
+        <div class="widget-section-title">
+          <span class="widget-section-icon">⚙️</span>
+          <span class="widget-section-name">Genel Ayarlar</span>
+        </div>
+      </div>
+      <div class="widget-section-content">
+        <form id="settingsForm">
+          <!-- Kafe Adı ve Logo -->
+          <div class="form-group">
+            <label for="cafeName">Kafe Adı</label>
+            <input type="text" id="cafeName" placeholder="Kafe adınız">
+          </div>
+          
+          <!-- Logo Yükleme -->
+          <div class="form-group">
+            <label>Logo</label>
+            <div class="logo-upload-container">
+              <div id="logoPreviewContainer" class="logo-preview-container">
+                <img id="logoPreview" src="" alt="Logo" style="display: none;">
+                <div id="logoPlaceholder" class="logo-placeholder">
+                  <span>☕</span>
+                  <small>Logo yükleyin</small>
+                </div>
+              </div>
+              <div class="logo-upload-actions">
+                <label class="btn-upload-logo">
+                  <input type="file" id="logoInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none" onchange="handleLogoUpload(this)">
+                  📷 Logo Seç
+                </label>
+                <button type="button" class="btn-remove-logo" id="removeLogoBtn" onclick="removeLogo()" style="display: none;">
+                  🗑️ Kaldır
+                </button>
+              </div>
+              <small class="logo-hint">PNG, JPG formatları desteklenir (Maks. 2MB)</small>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="themeSelect">Tema</label>
+              <select id="themeSelect">
+                <option value="light">Açık</option>
+                <option value="dark">Koyu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="primaryColor">Ana Renk</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="primaryColor" class="color-picker" value="#8B4513" oninput="syncColorInputs('picker')">
+                <input type="text" id="primaryColorHex" class="color-hex-input" value="#8B4513" placeholder="#RRGGBB" maxlength="7" oninput="syncColorInputs('hex')">
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">Widget Ayarları</div>
+            
+            <div class="settings-item">
+              <span class="settings-item-label">⏰ Saat Formatı</span>
+              <select id="clockFormat" style="width: 100px;">
+                <option value="24h">24 Saat</option>
+                <option value="12h">12 Saat</option>
+              </select>
+            </div>
+            
+            <div class="settings-item">
+              <span class="settings-item-label">🌤️ Hava Durumu Şehri</span>
+              <select id="weatherCity" style="width: 120px;">
+                <option value="Istanbul">İstanbul</option>
+                <option value="Ankara">Ankara</option>
+                <option value="Izmir">İzmir</option>
+                <option value="Bursa">Bursa</option>
+                <option value="Antalya">Antalya</option>
+                <option value="Adana">Adana</option>
+                <option value="Konya">Konya</option>
+                <option value="Gaziantep">Gaziantep</option>
+                <option value="Mersin">Mersin</option>
+                <option value="Kayseri">Kayseri</option>
+              </select>
+            </div>
+            
+            <div class="settings-item">
+              <span class="settings-item-label">🖼️ Slayt Süresi (sn)</span>
+              <input type="number" id="galleryInterval" value="5" min="3" max="30" style="width: 80px;">
+            </div>
+
+            <div class="settings-item">
+              <span class="settings-item-label">🌤️ Hava Durumu</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="weatherToggle" class="widget-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-item">
+              <span class="settings-item-label">⏰ Saat</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="clockToggle" class="widget-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-add">
+            💾 Ayarları Kaydet
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="modal-overlay" onclick="if(event.target === this) hideEventModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="eventModalTitle" class="modal-title">Yeni Etkinlik</h3>
+        <button class="modal-close" onclick="hideEventModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="eventForm">
+          <div class="form-group">
+            <label for="eventTitle">Etkinlik Adı *</label>
+            <input type="text" id="eventTitle" placeholder="Örn: Canlı Müzik" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventDate">Tarih *</label>
+              <input type="date" id="eventDate" required>
+            </div>
+            <div class="form-group">
+              <label for="eventTime">Saat *</label>
+              <input type="time" id="eventTime" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="eventDescription">Açıklama</label>
+            <textarea id="eventDescription" placeholder="Opsiyonel açıklama"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="eventIcon">İkon</label>
+            <select id="eventIcon">
+              <option value="📌">📌 Genel</option>
+              <option value="🎵">🎵 Müzik</option>
+              <option value="🎤">🎤 Mikrofon</option>
+              <option value="🎂">🎂 Doğum Günü</option>
+              <option value="🎉">🎉 Parti</option>
+              <option value="☕">☕ Kahve</option>
+              <option value="🍕">🍕 Yemek</option>
+              <option value="📚">📚 Kitap</option>
+              <option value="🎮">🎮 Oyun</option>
+              <option value="🎬">🎬 Film</option>
+              <option value="💼">💼 Toplantı</option>
+              <option value="🧘">🧘 Yoga</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="hideEventModal()">İptal</button>
+        <button class="btn btn-save" onclick="saveEvent()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photo Modal -->
+  <div id="photoModal" class="modal-overlay" onclick="if(event.target === this) hidePhotoModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Fotoğraf Ekle</h3>
+        <button class="modal-close" onclick="hidePhotoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="photoForm">
+          <div class="form-group">
+            <label>Fotoğraf Seç</label>
+            <label class="image-upload">
+              <input type="file" accept="image/*" style="display: none" onchange="handlePhotoUpload(this)">
+              <div class="image-upload-icon">📷</div>
+              <div class="image-upload-text">Tıklayıp fotoğraf seçin</div>
+            </label>
+            <div id="photoPreview"></div>
+          </div>
+          <div class="form-group">
+            <label for="photoUrl">veya URL yapıştırın</label>
+            <input type="url" id="photoUrl" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="photoCaption">Alt Yazı (Opsiyonel)</label>
+            <input type="text" id="photoCaption" placeholder="Fotoğraf açıklaması">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="hidePhotoModal()">İptal</button>
+        <button class="btn btn-save" onclick="savePhoto()">Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcement Modal -->
+  <div id="announcementModal" class="modal-overlay" onclick="if(event.target === this) hideAnnouncementModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="announcementModalTitle" class="modal-title">Yeni Duyuru</h3>
+        <button class="modal-close" onclick="hideAnnouncementModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="announcementForm">
+          <div class="form-group">
+            <label for="announcementText">Duyuru Metni *</label>
+            <textarea id="announcementText" placeholder="Örn: WiFi Şifresi: kafe2026" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="announcementPriority">Öncelik</label>
+            <select id="announcementPriority">
+              <option value="normal">Normal</option>
+              <option value="high">Yüksek (Kırmızı İkon)</option>
+            </select>
+          </div>
+          <div class="settings-item">
+            <span class="settings-item-label">Aktif</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="announcementActive" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="hideAnnouncementModal()">İptal</button>
+        <button class="btn btn-save" onclick="saveAnnouncement()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Modal -->
+  <div id="menuModal" class="modal-overlay" onclick="if(event.target === this) hideMenuModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="menuModalTitle" class="modal-title">Yeni Menü</h3>
+        <button class="modal-close" onclick="hideMenuModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="menuForm">
+          <div class="form-group">
+            <label for="menuName">Ürün Adı *</label>
+            <input type="text" id="menuName" placeholder="Örn: Günün Çorbası" required>
+          </div>
+          <div class="form-group">
+            <label for="menuDescription">Açıklama</label>
+            <input type="text" id="menuDescription" placeholder="Örn: Mercimek">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="menuPrice">Fiyat *</label>
+              <input type="text" id="menuPrice" placeholder="45₺" required>
+            </div>
+            <div class="form-group">
+              <label for="menuIcon">İkon</label>
+              <select id="menuIcon">
+                <option value="🍽️">🍽️ Genel</option>
+                <option value="☕">☕ Kahve</option>
+                <option value="🍵">🍵 Çay</option>
+                <option value="🥤">🥤 İçecek</option>
+                <option value="🍜">🍜 Çorba</option>
+                <option value="🥗">🥗 Salata</option>
+                <option value="🍝">🍝 Makarna</option>
+                <option value="🍕">🍕 Pizza</option>
+                <option value="🍔">🍔 Burger</option>
+                <option value="🥪">🥪 Sandviç</option>
+                <option value="🍰">🍰 Tatlı</option>
+                <option value="🥐">🥐 Pasta</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-item">
+            <span class="settings-item-label">Mevcut</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="menuAvailable" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="hideMenuModal()">İptal</button>
+        <button class="btn btn-save" onclick="saveMenuItem()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/widgets/calendar.js"></script>
+  <script src="js/widgets/gallery.js"></script>
+  <script src="js/widgets/announcement.js"></script>
+  <script src="js/widgets/menu.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
